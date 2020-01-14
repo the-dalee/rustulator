@@ -1,34 +1,41 @@
+//! Uses the StatefulOutputPin embedded_hal trait to toggle the pin
+//! On the stm32 discovery board this is the "south" led
+//! Target board: STM32F3DISCOVERY
+
 #![deny(unsafe_code)]
 #![no_main]
 #![no_std]
 
-use aux5::{entry, prelude::*, Delay, Leds};
-use itertools::Itertools;
+extern crate panic_semihosting;
+
+use cortex_m_rt::entry;
+use stm32f3xx_hal::prelude::*;
+use stm32f3xx_hal::stm32;
 
 #[entry]
 fn main() -> ! {
-    let (mut leds, mut button) = aux5::init();
-    // let half_period = 500_u16;
+    let dp = stm32::Peripherals::take().unwrap();
 
-    // let delay = Delay::new(syst: SYST, clocks: Clocks);
+    let mut rcc = dp.RCC.constrain();
+    let mut gpioe = dp.GPIOE.split(&mut rcc.ahb);
 
-    // (0..leds.len())
-    // .cycle()
-    // .tuple_windows()
-    // .for_each(|(current, next)| {
-    //     leds[next].on();
-    //     delay.delay_ms(half_period);
-    //     leds[current].off();
-    //     delay.delay_ms(half_period);
-    // });
+    let mut led = gpioe
+        .pe13
+        .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper);
+
+    led.set_low().unwrap();
 
     loop {
-        for i in 0..8 {
-            if button.is_pressed() {
-                leds[i].on();
-            } else {
-                leds[i].off();
-            }
+        led.toggle().unwrap();
+        cortex_m::asm::delay(8_000_000);
+        // Toggle by hand.
+        // Uses `StatefulOutputPin` instead of `ToggleableOutputPin`.
+        // Logically it is the same.
+        if led.is_set_low().unwrap() {
+            led.set_high().unwrap();
+        } else {
+            led.set_low().unwrap();
         }
+        cortex_m::asm::delay(8_000_000);
     }
 }
