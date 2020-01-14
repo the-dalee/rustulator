@@ -6,12 +6,12 @@ use ::hal::hal::digital::v2::InputPin;
 
 
 pub struct Button {
-    inner: PA0<Input<PullUp>>,
+    inner: PA0<Input<PullDown>>,
 }
 
 impl Button {
     pub fn new(mut parts: gpioa::Parts) -> Self {
-        let button = parts.pa0.into_pull_up_input(&mut parts.moder, &mut parts.pupdr);
+        let button = parts.pa0.into_pull_down_input(&mut parts.moder, &mut parts.pupdr);
 
         Self {
             inner: button
