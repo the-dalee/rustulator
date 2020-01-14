@@ -9,7 +9,7 @@
 | PA0-PA7         | data bits D0-D7 |
 | PE0             | Enable          |
 | PE1             | RW              |
-| PE2             | Reset           |
+| PE2             | Register select |
 
 ## Links
 
