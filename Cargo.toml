@@ -1,0 +1,13 @@
+[package]
+authors = ["Jorge Aparicio <jorge@japaric.io>"]
+edition = "2018"
+name = "led-roulette"
+version = "0.1.0"
+
+[dependencies]
+aux5 = { path = "auxiliary" }
+itertools = { version = "0.8.0", default-features = false }
+
+[dependencies.f3]
+features = ["rt"]
+version = "0.6.1"
