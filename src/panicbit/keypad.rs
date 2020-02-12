@@ -1,6 +1,7 @@
 use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::gpio::{Output, PXx, PushPull, Input, PullDown};
 use bitflags::bitflags;
+use super::gpio::Pin;
 
 bitflags! {
     pub struct Button: u16 {
@@ -23,7 +24,7 @@ bitflags! {
     }
 }
 
-const KEYPAD: [[Button; 4]; 4] = [
+pub const LAYOUT: [[Button; 4]; 4] = [
     [Button::N1, Button::N2, Button::N3, Button::A],
     [Button::N4, Button::N5, Button::N6, Button::B],
     [Button::N7, Button::N8, Button::N9, Button::C],
@@ -38,18 +39,29 @@ pub struct Keypad {
 impl Keypad {
     #[allow(clippy::too_many_arguments)]
     pub fn new(
-        pin1: PXx<Output<PushPull>>,
-        pin2: PXx<Output<PushPull>>,
-        pin3: PXx<Output<PushPull>>,
-        pin4: PXx<Output<PushPull>>,
-        pin5: PXx<Input<PullDown>>,
-        pin6: PXx<Input<PullDown>>,
-        pin7: PXx<Input<PullDown>>,
-        pin8: PXx<Input<PullDown>>,
+        regs: &mut super::gpio::Regs,
+        pin1: impl Pin,
+        pin2: impl Pin,
+        pin3: impl Pin,
+        pin4: impl Pin,
+        pin5: impl Pin,
+        pin6: impl Pin,
+        pin7: impl Pin,
+        pin8: impl Pin,
     ) -> Self {
         Self {
-            rows: [pin8, pin7, pin6, pin5],
-            cols: [pin4, pin3, pin2, pin1],
+            rows: [
+                pin8.pull_down_input(regs),
+                pin7.pull_down_input(regs),
+                pin6.pull_down_input(regs),
+                pin5.pull_down_input(regs),
+            ],
+            cols: [
+                pin4.push_pull_output(regs),
+                pin3.push_pull_output(regs),
+                pin2.push_pull_output(regs),
+                pin1.push_pull_output(regs),
+            ],
         }
     }
 
@@ -60,7 +72,7 @@ impl Keypad {
             col.set_low().ok();
         }
 
-        for (row_pin, row) in self.rows.iter_mut().zip(&KEYPAD) {
+        for (row_pin, row) in self.rows.iter_mut().zip(&LAYOUT) {
             for (col_pin, button) in self.cols.iter_mut().zip(row) {
                 col_pin.set_high().ok();
 
