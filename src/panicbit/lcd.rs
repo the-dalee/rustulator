@@ -1,5 +1,5 @@
 use stm32f3xx_hal::prelude::*;
-use stm32f3xx_hal::gpio::{Output, PXx, PushPull, Input, PullDown};
+use stm32f3xx_hal::gpio::{Output, PXx, PushPull};
 use super::gpio::Pin;
 
 pub const NUM_DELAY_CYCLES: u32 = 50_000;
@@ -74,7 +74,7 @@ impl Lcd {
     }
 
     pub fn set_data(&mut self, data: u8) {
-        if (data & (1 << 0)) == 0 {
+        if (data & 1) == 0 {
             self.data0.set_low().ok();
         } else {
             self.data0.set_high().ok();

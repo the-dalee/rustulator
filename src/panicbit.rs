@@ -9,7 +9,7 @@ mod peripherals;
 use peripherals::Peripherals;
 
 mod keypad;
-use keypad::{Keypad, Button};
+use keypad::Keypad;
 
 mod lcd;
 use lcd::Lcd;
