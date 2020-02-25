@@ -1,4 +1,5 @@
 use stm32f3xx_hal::prelude::*;
+use stm32f3xx_hal::gpio::{PXx, PushPull, Output};
 use cortex_m::iprintln;
 use enumflags2::BitFlags;
 
@@ -9,7 +10,7 @@ mod peripherals;
 use peripherals::Peripherals;
 
 mod keypad;
-use keypad::Keypad;
+use keypad::{Button, Keypad};
 
 mod lcd;
 use lcd::Lcd;
@@ -42,8 +43,6 @@ pub fn main() -> ! {
         p.pins.pe14.push_pull_output(&mut p.gpio_regs),
         p.pins.pe15.push_pull_output(&mut p.gpio_regs),
     ];
-
-    let mut previous_buttons = BitFlags::empty();
 
     let mut lcd = Lcd::new(
         &mut p.gpio_regs,
@@ -79,6 +78,8 @@ pub fn main() -> ! {
     lcd.send_data(b's');
     lcd.send_data(b't');
 
+    let mut previous_buttons = BitFlags::empty();
+
     loop {
         let buttons = keypad.poll();
 
@@ -97,19 +98,23 @@ pub fn main() -> ! {
             iprintln!(stim, "button: {}", button);
         }
 
-        for led in &mut leds {
-            led.set_low().ok();
-        }
+        display_buttons_via_leds(buttons, &mut leds);
+    }
+}
 
-        for (row_i, row) in keypad::LAYOUT.iter().enumerate() {
-            for (col_i, button) in row.iter().enumerate() {
-                if !buttons.contains(*button) {
-                    continue
-                }
+fn display_buttons_via_leds(buttons: BitFlags<Button>, leds: &mut [PXx<Output<PushPull>>]) {
+    for led in &mut *leds {
+        led.set_low().ok();
+    }
 
-                leds[row_i].set_high().ok();
-                leds[4 + col_i].set_high().ok();
+    for (row_i, row) in keypad::LAYOUT.iter().enumerate() {
+        for (col_i, button) in row.iter().enumerate() {
+            if !buttons.contains(*button) {
+                continue
             }
+
+            leds[row_i].set_high().ok();
+            leds[4 + col_i].set_high().ok();
         }
     }
 }
