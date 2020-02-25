@@ -1,6 +1,5 @@
-use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::gpio::{Output, PXx, PushPull};
-use super::gpio::Pin;
+use super::gpio::{Pin, PinSet};
 
 pub const NUM_DELAY_CYCLES: u32 = 50_000;
 
@@ -46,80 +45,36 @@ impl Lcd {
         }
     }
 
-    pub fn set_register_select(&mut self, enabled: bool) {
-        if enabled {
-            self.register_select.set_high().ok();
-        } else {
-            self.register_select.set_low().ok();
-        }
+    pub fn set_register_select(&mut self, state: bool) {
+        self.register_select.set(state);
         cortex_m::asm::delay(NUM_DELAY_CYCLES);
     }
 
-    pub fn set_enable(&mut self, enabled: bool) {
-        if enabled {
-            self.enable.set_high().ok();
-        } else {
-            self.enable.set_low().ok();
-        }
+    pub fn set_enable(&mut self, state: bool) {
+        self.enable.set(state);
         cortex_m::asm::delay(NUM_DELAY_CYCLES);
     }
 
     pub fn send_data(&mut self, data: u8) {
         self.set_enable(true);
         cortex_m::asm::delay(NUM_DELAY_CYCLES);
+
         self.set_data(data);
         cortex_m::asm::delay(NUM_DELAY_CYCLES);
+
         self.set_enable(false);
         cortex_m::asm::delay(NUM_DELAY_CYCLES);
     }
 
+    #[allow(clippy::identity_op)]
     pub fn set_data(&mut self, data: u8) {
-        if (data & 1) == 0 {
-            self.data0.set_low().ok();
-        } else {
-            self.data0.set_high().ok();
-        }
-
-        if (data & (1 << 1)) == 0 {
-            self.data1.set_low().ok();
-        } else {
-            self.data1.set_high().ok();
-        }
-
-        if (data & (1 << 2)) == 0 {
-            self.data2.set_low().ok();
-        } else {
-            self.data2.set_high().ok();
-        }
-
-        if (data & (1 << 3)) == 0 {
-            self.data3.set_low().ok();
-        } else {
-            self.data3.set_high().ok();
-        }
-
-        if (data & (1 << 4)) == 0 {
-            self.data4.set_low().ok();
-        } else {
-            self.data4.set_high().ok();
-        }
-
-        if (data & (1 << 5)) == 0 {
-            self.data5.set_low().ok();
-        } else {
-            self.data5.set_high().ok();
-        }
-
-        if (data & (1 << 6)) == 0 {
-            self.data6.set_low().ok();
-        } else {
-            self.data6.set_high().ok();
-        }
-
-        if (data & (1 << 7)) == 0 {
-            self.data7.set_low().ok();
-        } else {
-            self.data7.set_high().ok();
-        }
+        self.data0.set(data >> 0 & 1 == 1);
+        self.data1.set(data >> 1 & 1 == 1);
+        self.data2.set(data >> 2 & 1 == 1);
+        self.data3.set(data >> 3 & 1 == 1);
+        self.data4.set(data >> 4 & 1 == 1);
+        self.data5.set(data >> 5 & 1 == 1);
+        self.data6.set(data >> 6 & 1 == 1);
+        self.data7.set(data >> 7 & 1 == 1);
     }
 }

@@ -1,3 +1,5 @@
+
+use stm32f3xx_hal::prelude::_embedded_hal_digital_OutputPin as _;
 use stm32f3xx_hal::gpio::*;
 use stm32f3xx_hal::gpio::gpioa::*;
 use stm32f3xx_hal::gpio::gpiob::*;
@@ -366,4 +368,18 @@ gpio_block!(
 pub trait Pin {
     fn pull_down_input(self, regs: &mut Regs) -> PXx<Input<PullDown>>;
     fn push_pull_output(self, regs: &mut Regs) -> PXx<Output<PushPull>>;
+}
+
+pub trait PinSet {
+    fn set(&mut self, high: bool);
+}
+
+impl PinSet for PXx<Output<PushPull>> {
+    fn set(&mut self, high: bool) {
+        if high {
+            self.set_high().ok();
+        } else {
+            self.set_low().ok();
+        }
+    }
 }
