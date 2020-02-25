@@ -103,18 +103,16 @@ pub fn main() -> ! {
 }
 
 fn display_buttons_via_leds(buttons: BitFlags<Button>, leds: &mut [PXx<Output<PushPull>>]) {
+    // disable all leds
     for led in &mut *leds {
         led.set_low().ok();
     }
 
-    for (row_i, row) in keypad::LAYOUT.iter().enumerate() {
-        for (col_i, button) in row.iter().enumerate() {
-            if !buttons.contains(*button) {
-                continue
-            }
+    // map button row and column to leds
+    for button in buttons.iter() {
+        let (row, column) = button.row_and_column();
 
-            leds[row_i].set_high().ok();
-            leds[4 + col_i].set_high().ok();
-        }
+        leds[row].set_high().ok();
+        leds[4 + column].set_high().ok();
     }
 }

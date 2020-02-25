@@ -102,6 +102,27 @@ impl Button {
             Self::HASH => '#',
         }
     }
+
+    pub fn row_and_column(self) -> (usize, usize) {
+        match self {
+            Self::N1 => (0, 0),
+            Self::N2 => (0, 1),
+            Self::N3 => (0, 2),
+            Self::A => (0, 3),
+            Self::N4 => (1, 0),
+            Self::N5 => (1, 1),
+            Self::N6 => (1, 2),
+            Self::B => (1, 3),
+            Self::N7 => (2, 0),
+            Self::N8 => (2, 1),
+            Self::N9 => (2, 2),
+            Self::C => (2, 3),
+            Self::ASTERISK => (3, 0),
+            Self::N0 => (3, 1),
+            Self::HASH => (3, 2),
+            Self::D => (3, 3),
+        }
+    }
 }
 
 pub const LAYOUT: [[Button; 4]; 4] = [
