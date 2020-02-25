@@ -7,6 +7,9 @@ use peripherals::Peripherals;
 mod keypad;
 use keypad::{Keypad, Button};
 
+mod lcd;
+use lcd::Lcd;
+
 use stm32f3xx_hal::prelude::*;
 use cortex_m::iprintln;
 
@@ -41,6 +44,42 @@ pub fn main() -> ! {
 
     let mut previous_buttons = Button::empty();
 
+    let mut lcd = Lcd::new(
+        &mut p.gpio_regs,
+        p.pins.pa8,
+        p.pins.pa10,
+        p.pins.pd0,
+        p.pins.pc12, // p.pins.pd1,
+        p.pins.pd2,
+        p.pins.pd3,
+        p.pins.pd4,
+        p.pins.pd5,
+        p.pins.pd6,
+        p.pins.pd7,
+    );
+
+    lcd.set_register_select(false);
+    cortex_m::asm::delay(500_000);
+
+    // Clear display
+    lcd.send_data(0b0000_0001);
+    // Return home
+    lcd.send_data(0b0000_0010);
+    // Entry mode set
+    lcd.send_data(0b0000_0110);
+    // Display on/off
+    lcd.send_data(0b0000_1111);
+    // Function Set
+    lcd.send_data(0b0011_1000);
+
+    lcd.set_register_select(true);
+    // cortex_m::asm::delay(5_500_000);
+
+    lcd.send_data(b'R');
+    lcd.send_data(b'u');
+    lcd.send_data(b's');
+    lcd.send_data(b't');
+
     loop {
         let buttons = keypad.poll();
 
@@ -49,6 +88,46 @@ pub fn main() -> ! {
         }
 
         previous_buttons = buttons;
+
+        if buttons.contains(Button::N0) {
+            lcd.send_data(b'0');
+        }
+
+        if buttons.contains(Button::N1) {
+            lcd.send_data(b'1');
+        }
+
+        if buttons.contains(Button::N2) {
+            lcd.send_data(b'2');
+        }
+
+        if buttons.contains(Button::N3) {
+            lcd.send_data(b'3');
+        }
+
+        if buttons.contains(Button::N4) {
+            lcd.send_data(b'4');
+        }
+
+        if buttons.contains(Button::N5) {
+            lcd.send_data(b'5');
+        }
+
+        if buttons.contains(Button::N6) {
+            lcd.send_data(b'6');
+        }
+
+        if buttons.contains(Button::N7) {
+            lcd.send_data(b'7');
+        }
+
+        if buttons.contains(Button::N8) {
+            lcd.send_data(b'8');
+        }
+
+        if buttons.contains(Button::N9) {
+            lcd.send_data(b'9');
+        }
 
         for led in &mut leds {
             led.set_low().ok();
