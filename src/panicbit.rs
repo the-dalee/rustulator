@@ -66,15 +66,5 @@ pub fn main() -> ! {
         }
 
         // iprintln!(stim, "buttons: {:#?}", buttons);
-
-        // for led in &mut leds {
-        //     led.set_high().ok();
-        //     cortex_m::asm::delay(1_000_000 / 2);
-        // }
-
-        // for led in &mut leds {
-        //     led.set_low().ok();
-        //     cortex_m::asm::delay(1_000_000 / 2);
-        // }
     }
 }
