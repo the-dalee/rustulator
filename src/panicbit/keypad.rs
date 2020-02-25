@@ -3,58 +3,6 @@ use stm32f3xx_hal::gpio::{Output, PXx, PushPull, Input, PullDown};
 use enumflags2::BitFlags;
 use super::gpio::Pin;
 
-
-#[derive(BitFlags, Copy, Clone, Debug, PartialEq, Eq)]
-#[repr(u16)]
-pub enum Button {
-    N0 = 1,
-    N1 = 1 << 1,
-    N2 = 1 << 2,
-    N3 = 1 << 3,
-    N4 = 1 << 4,
-    N5 = 1 << 5,
-    N6 = 1 << 6,
-    N7 = 1 << 7,
-    N8 = 1 << 8,
-    N9 = 1 << 9,
-    A = 1 << 10,
-    B = 1 << 11,
-    C = 1 << 12,
-    D = 1 << 13,
-    ASTERISK = 1 << 14,
-    HASH = 1 << 15,
-}
-
-impl Button {
-    pub fn as_char(self) -> char {
-        match self {
-            Self::N0 => '0',
-            Self::N1 => '1',
-            Self::N2 => '2',
-            Self::N3 => '3',
-            Self::N4 => '4',
-            Self::N5 => '5',
-            Self::N6 => '6',
-            Self::N7 => '7',
-            Self::N8 => '8',
-            Self::N9 => '9',
-            Self::A => 'A',
-            Self::B => 'B',
-            Self::C => 'C',
-            Self::D => 'D',
-            Self::ASTERISK => '*',
-            Self::HASH => '#',
-        }
-    }
-}
-
-pub const LAYOUT: [[Button; 4]; 4] = [
-    [Button::N1, Button::N2, Button::N3, Button::A],
-    [Button::N4, Button::N5, Button::N6, Button::B],
-    [Button::N7, Button::N8, Button::N9, Button::C],
-    [Button::ASTERISK, Button::N0, Button::HASH, Button::D],
-];
-
 pub struct Keypad {
     pub rows: [PXx<Input<PullDown>>; 4],
     pub cols: [PXx<Output<PushPull>>; 4],
@@ -111,3 +59,54 @@ impl Keypad {
         buttons
     }
 }
+
+#[derive(BitFlags, Copy, Clone, Debug, PartialEq, Eq)]
+#[repr(u16)]
+pub enum Button {
+    N0 = 1,
+    N1 = 1 << 1,
+    N2 = 1 << 2,
+    N3 = 1 << 3,
+    N4 = 1 << 4,
+    N5 = 1 << 5,
+    N6 = 1 << 6,
+    N7 = 1 << 7,
+    N8 = 1 << 8,
+    N9 = 1 << 9,
+    A = 1 << 10,
+    B = 1 << 11,
+    C = 1 << 12,
+    D = 1 << 13,
+    ASTERISK = 1 << 14,
+    HASH = 1 << 15,
+}
+
+impl Button {
+    pub fn as_char(self) -> char {
+        match self {
+            Self::N0 => '0',
+            Self::N1 => '1',
+            Self::N2 => '2',
+            Self::N3 => '3',
+            Self::N4 => '4',
+            Self::N5 => '5',
+            Self::N6 => '6',
+            Self::N7 => '7',
+            Self::N8 => '8',
+            Self::N9 => '9',
+            Self::A => 'A',
+            Self::B => 'B',
+            Self::C => 'C',
+            Self::D => 'D',
+            Self::ASTERISK => '*',
+            Self::HASH => '#',
+        }
+    }
+}
+
+pub const LAYOUT: [[Button; 4]; 4] = [
+    [Button::N1, Button::N2, Button::N3, Button::A],
+    [Button::N4, Button::N5, Button::N6, Button::B],
+    [Button::N7, Button::N8, Button::N9, Button::C],
+    [Button::ASTERISK, Button::N0, Button::HASH, Button::D],
+];
