@@ -60,7 +60,6 @@ pub fn main() -> ! {
     );
 
     lcd.set_register_select(false);
-    cortex_m::asm::delay(500_000);
 
     // Clear display
     lcd.send_data(0b0000_0001);
@@ -74,7 +73,6 @@ pub fn main() -> ! {
     lcd.send_data(0b0011_1000);
 
     lcd.set_register_select(true);
-    // cortex_m::asm::delay(5_500_000);
 
     lcd.send_data(b'R');
     lcd.send_data(b'u');
@@ -96,7 +94,7 @@ pub fn main() -> ! {
         for button in diff_buttons.iter() {
             let button = button.as_char();
             lcd.send_data(button as u8);
-            // iprintln!(stim, "button: {}", button);
+            iprintln!(stim, "button: {}", button);
         }
 
         for led in &mut leds {

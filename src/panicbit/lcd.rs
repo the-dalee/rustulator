@@ -2,6 +2,8 @@ use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::gpio::{Output, PXx, PushPull, Input, PullDown};
 use super::gpio::Pin;
 
+pub const NUM_DELAY_CYCLES: u32 = 50_000;
+
 pub struct Lcd {
     pub register_select: PXx<Output<PushPull>>,
     pub enable: PXx<Output<PushPull>>,
@@ -50,6 +52,7 @@ impl Lcd {
         } else {
             self.register_select.set_low().ok();
         }
+        cortex_m::asm::delay(NUM_DELAY_CYCLES);
     }
 
     pub fn set_enable(&mut self, enabled: bool) {
@@ -58,15 +61,16 @@ impl Lcd {
         } else {
             self.enable.set_low().ok();
         }
+        cortex_m::asm::delay(NUM_DELAY_CYCLES);
     }
 
     pub fn send_data(&mut self, data: u8) {
         self.set_enable(true);
-        cortex_m::asm::delay(500_000);
+        cortex_m::asm::delay(NUM_DELAY_CYCLES);
         self.set_data(data);
-        cortex_m::asm::delay(500_000);
+        cortex_m::asm::delay(NUM_DELAY_CYCLES);
         self.set_enable(false);
-        cortex_m::asm::delay(500_000);
+        cortex_m::asm::delay(NUM_DELAY_CYCLES);
     }
 
     pub fn set_data(&mut self, data: u8) {
