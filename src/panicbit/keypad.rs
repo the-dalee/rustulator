@@ -1,27 +1,28 @@
 use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::gpio::{Output, PXx, PushPull, Input, PullDown};
-use bitflags::bitflags;
+use enumflags2::BitFlags;
 use super::gpio::Pin;
 
-bitflags! {
-    pub struct Button: u16 {
-        const N0 = 1;
-        const N1 = 1 << 1;
-        const N2 = 1 << 2;
-        const N3 = 1 << 3;
-        const N4 = 1 << 4;
-        const N5 = 1 << 5;
-        const N6 = 1 << 6;
-        const N7 = 1 << 7;
-        const N8 = 1 << 8;
-        const N9 = 1 << 9;
-        const A = 1 << 10;
-        const B = 1 << 11;
-        const C = 1 << 12;
-        const D = 1 << 13;
-        const ASTERISK = 1 << 14;
-        const HASH = 1 << 15;
-    }
+
+#[derive(BitFlags, Copy, Clone, Debug, PartialEq, Eq)]
+#[repr(u16)]
+pub enum Button {
+    N0 = 1,
+    N1 = 1 << 1,
+    N2 = 1 << 2,
+    N3 = 1 << 3,
+    N4 = 1 << 4,
+    N5 = 1 << 5,
+    N6 = 1 << 6,
+    N7 = 1 << 7,
+    N8 = 1 << 8,
+    N9 = 1 << 9,
+    A = 1 << 10,
+    B = 1 << 11,
+    C = 1 << 12,
+    D = 1 << 13,
+    ASTERISK = 1 << 14,
+    HASH = 1 << 15,
 }
 
 pub const LAYOUT: [[Button; 4]; 4] = [
@@ -65,8 +66,8 @@ impl Keypad {
         }
     }
 
-    pub fn poll(&mut self) -> Button {
-        let mut buttons = Button::empty();
+    pub fn poll(&mut self) -> BitFlags<Button> {
+        let mut buttons = BitFlags::empty();
 
         for col in &mut self.cols {
             col.set_low().ok();

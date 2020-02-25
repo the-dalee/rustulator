@@ -1,3 +1,7 @@
+use stm32f3xx_hal::prelude::*;
+use cortex_m::iprintln;
+use enumflags2::BitFlags;
+
 mod gpio;
 use gpio::Pin;
 
@@ -9,9 +13,6 @@ use keypad::{Keypad, Button};
 
 mod lcd;
 use lcd::Lcd;
-
-use stm32f3xx_hal::prelude::*;
-use cortex_m::iprintln;
 
 pub fn main() -> ! {
     let mut cp = cortex_m::Peripherals::take().unwrap();
@@ -42,7 +43,7 @@ pub fn main() -> ! {
         p.pins.pe15.push_pull_output(&mut p.gpio_regs),
     ];
 
-    let mut previous_buttons = Button::empty();
+    let mut previous_buttons = BitFlags::empty();
 
     let mut lcd = Lcd::new(
         &mut p.gpio_regs,
