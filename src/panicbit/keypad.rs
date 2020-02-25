@@ -25,6 +25,29 @@ pub enum Button {
     HASH = 1 << 15,
 }
 
+impl Button {
+    pub fn as_char(self) -> char {
+        match self {
+            Self::N0 => '0',
+            Self::N1 => '1',
+            Self::N2 => '2',
+            Self::N3 => '3',
+            Self::N4 => '4',
+            Self::N5 => '5',
+            Self::N6 => '6',
+            Self::N7 => '7',
+            Self::N8 => '8',
+            Self::N9 => '9',
+            Self::A => 'A',
+            Self::B => 'B',
+            Self::C => 'C',
+            Self::D => 'D',
+            Self::ASTERISK => '*',
+            Self::HASH => '#',
+        }
+    }
+}
+
 pub const LAYOUT: [[Button; 4]; 4] = [
     [Button::N1, Button::N2, Button::N3, Button::A],
     [Button::N4, Button::N5, Button::N6, Button::B],

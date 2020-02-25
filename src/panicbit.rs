@@ -88,46 +88,15 @@ pub fn main() -> ! {
             continue;
         }
 
+        let mut diff_buttons = buttons;
+        diff_buttons.remove(previous_buttons);
+
         previous_buttons = buttons;
 
-        if buttons.contains(Button::N0) {
-            lcd.send_data(b'0');
-        }
-
-        if buttons.contains(Button::N1) {
-            lcd.send_data(b'1');
-        }
-
-        if buttons.contains(Button::N2) {
-            lcd.send_data(b'2');
-        }
-
-        if buttons.contains(Button::N3) {
-            lcd.send_data(b'3');
-        }
-
-        if buttons.contains(Button::N4) {
-            lcd.send_data(b'4');
-        }
-
-        if buttons.contains(Button::N5) {
-            lcd.send_data(b'5');
-        }
-
-        if buttons.contains(Button::N6) {
-            lcd.send_data(b'6');
-        }
-
-        if buttons.contains(Button::N7) {
-            lcd.send_data(b'7');
-        }
-
-        if buttons.contains(Button::N8) {
-            lcd.send_data(b'8');
-        }
-
-        if buttons.contains(Button::N9) {
-            lcd.send_data(b'9');
+        for button in diff_buttons.iter() {
+            let button = button.as_char();
+            lcd.send_data(button as u8);
+            // iprintln!(stim, "button: {}", button);
         }
 
         for led in &mut leds {
@@ -144,7 +113,5 @@ pub fn main() -> ! {
                 leds[4 + col_i].set_high().ok();
             }
         }
-
-        // iprintln!(stim, "buttons: {:#?}", buttons);
     }
 }
