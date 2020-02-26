@@ -29,14 +29,14 @@ pub fn main() -> ! {
 
     let mut keypad = Keypad::new(
         &mut p.gpio_regs,
-        p.pins.pd8,
+        p.pins.pb11,
+        p.pins.pb13,
+        p.pins.pb15,
         p.pins.pd9,
-        p.pins.pd10,
         p.pins.pd11,
-        p.pins.pd12,
         p.pins.pd13,
-        p.pins.pd14,
         p.pins.pd15,
+        p.pins.pc6,
     );
 
     let mut leds = [
