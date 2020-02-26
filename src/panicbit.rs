@@ -1,7 +1,9 @@
 use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::gpio::{PXx, PushPull, Output};
-use cortex_m::iprintln;
 use enumflags2::BitFlags;
+
+#[macro_use]
+mod macros;
 
 mod gpio;
 use gpio::Pin;
@@ -105,17 +107,17 @@ pub fn main() -> ! {
 
             match button {
                 '#' => {
-                    iprintln!(stim, "Storing sequence {}", sequence);
+                    println!(stim, "Storing sequence {}", sequence);
                     sequences.push(sequence);
                     sequence = String::new();
                 },
-                '*' => iprintln!(stim, "Stored sequences: {:#?}", sequences),
+                '*' => println!(stim, "Stored sequences: {:#?}", sequences),
                 _ => {
                     lcd.send_data(button as u8);
-                    iprintln!(stim, "button: {}", button);
+                    println!(stim, "button: {}", button);
 
                     sequence.push(button);
-                    iprintln!(stim, "sequence: {}", sequence);
+                    println!(stim, "sequence: {}", sequence);
                 }
             }
 
