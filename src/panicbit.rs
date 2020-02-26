@@ -54,14 +54,14 @@ pub fn main() -> ! {
         &mut p.gpio_regs,
         p.pins.pa8,
         p.pins.pa10,
-        p.pins.pd0,
-        p.pins.pc12, // p.pins.pd1,
-        p.pins.pd2,
-        p.pins.pd3,
-        p.pins.pd4,
-        p.pins.pd5,
-        p.pins.pd6,
-        p.pins.pd7,
+        p.pins.pb10,
+        p.pins.pb12,
+        p.pins.pb14,
+        p.pins.pd8,
+        p.pins.pd10,
+        p.pins.pd12,
+        p.pins.pd14,
+        p.pins.pc7,
     );
 
     lcd.set_register_select(false);
