@@ -12,8 +12,13 @@ use peripherals::Peripherals;
 mod keypad;
 use keypad::{Button, Keypad};
 
+mod allocator;
+pub use allocator::Allocator;
+
 mod lcd;
 use lcd::Lcd;
+
+use alloc::string::String;
 
 pub fn main() -> ! {
     let mut cp = cortex_m::Peripherals::take().unwrap();
@@ -78,6 +83,7 @@ pub fn main() -> ! {
     lcd.send_data(b's');
     lcd.send_data(b't');
 
+    let mut sequence = String::new();
     let mut previous_buttons = BitFlags::empty();
 
     loop {
@@ -96,6 +102,9 @@ pub fn main() -> ! {
             let button = button.as_char();
             lcd.send_data(button as u8);
             iprintln!(stim, "button: {}", button);
+
+            sequence.push(button);
+            iprintln!(stim, "sequence: {}", sequence);
         }
 
         display_buttons_via_leds(buttons, &mut leds);
