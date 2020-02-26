@@ -1,26 +1,32 @@
 use core::alloc::{Layout, GlobalAlloc};
 use core::sync::atomic::AtomicUsize;
 use core::sync::atomic::Ordering;
+use core::cell::UnsafeCell;
 
 pub struct Allocator {
-    addr: AtomicUsize,
+    addr: UnsafeCell<usize>,
 }
 
 impl Allocator {
     pub const fn start_at(addr: usize) -> Self {
         Self {
-            addr: AtomicUsize::new(addr),
+            addr: UnsafeCell::new(addr),
         }
     }
 }
 
 unsafe impl GlobalAlloc for Allocator {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        let padding = layout.size() % layout.align();
-        let size = layout.size() + padding;
-        let ptr = self.addr.fetch_add(size, Ordering::SeqCst);
+        let ptr = self.addr.get();
+        let padding = *ptr % layout.align();
 
-        ptr as *mut u8
+        *ptr += padding;
+
+        let res = *ptr;
+
+        *ptr += layout.size();
+
+        res as *mut u8
     }
 
     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
