@@ -15,10 +15,10 @@ use core::alloc::Layout;
 mod panicbit;
 
 #[global_allocator]
-static ALLOCATOR: panicbit::Allocator = panicbit::Allocator::start_at(0x20000000);
+static ALLOCATOR: panicbit::Allocator = panicbit::Allocator::new();
 
 #[alloc_error_handler]
-fn foo(_: Layout) -> ! {
+fn alloc_error_handler(_: Layout) -> ! {
     panic!("Allocation error");
 }
 
